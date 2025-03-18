@@ -1,0 +1,62 @@
+{
+    "name": "electron-nextjs-notes",
+    "version": "1.1.0",
+    "description": "桌面笔记应用",
+    "main": "electron/main.js",
+    "author": "Your Name",
+    "license": "MIT",
+    "private": true,
+    "scripts": {
+        "dev": "cross-env NEXT_PUBLIC_DEV=true concurrently \"pnpm run dev:next\" \"pnpm run dev:electron\"",
+        "dev:next": "cross-env NEXT_PUBLIC_DEV=true next dev",
+        "dev:electron": "cross-env NEXT_PUBLIC_DEV=true electron .",
+        "build": "prisma generate && next build && electron-builder",
+        "start": "next start",
+        "lint": "next lint",
+        "postinstall": "prisma generate && prisma migrate dev --name init"
+    },
+    "dependencies": {
+        "@prisma/client": "^5.10.2",
+        "@react-spring/web": "^9.7.5",
+        "dotenv": "^16.4.7",
+        "next": "^14.0.4",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
+    },
+    "devDependencies": {
+        "@next/swc-win32-x64-msvc": "14.2.24",
+        "@types/node": "^20.10.6",
+        "@types/react": "^18.2.46",
+        "autoprefixer": "^10.4.16",
+        "concurrently": "^9.1.2",
+        "cross-env": "^7.0.3",
+        "electron": "^28.1.1",
+        "electron-builder": "^24.9.1",
+        "postcss": "^8.4.32",
+        "prisma": "^5.10.2",
+        "tailwindcss": "^3.4.0",
+        "typescript": "^5.3.3"
+    },
+    "build": {
+        "appId": "com.example.ai-note",
+        "productName": "AI笔记",
+        "files": [
+            "electron/**/*",
+            "dist/renderer/**/*",
+            "prisma/**/*"
+        ],
+        "asarUnpack": [
+            "node_modules/.prisma/**/*",
+            "node_modules/@prisma/client/**/*"
+        ],
+        "extraResources": [
+            {
+                "from": "node_modules/.prisma",
+                "to": "app.asar.unpacked/node_modules/.prisma",
+                "filter": [
+                    "**/*"
+                ]
+            }
+        ]
+    }
+}

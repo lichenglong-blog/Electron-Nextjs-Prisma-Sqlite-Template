@@ -1,0 +1,25 @@
+appId: com.example.electron-nextjs-notes
+productName: 笔记应用
+copyright: Copyright © 2023
+
+directories:
+  buildResources: resources
+  output: dist
+
+files:
+  - build/**/*
+  - electron/**/*
+  - prisma/**/*
+  - node_modules/**/*
+
+win:
+  target: nsis
+  icon: resources/icon.ico
+
+mac:
+  target: dmg
+  icon: resources/icon.icns
+
+linux:
+  target: AppImage
+  icon: resources/icon.png 

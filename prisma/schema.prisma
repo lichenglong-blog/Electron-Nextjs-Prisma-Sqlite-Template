@@ -1,0 +1,20 @@
+// 这是 Prisma schema 文件
+// 详情请参考文档：https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+    engineType = "library"
+  binaryTargets = ["native", "windows"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./notes.db"
+}
+
+model Note {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String
+  createdAt DateTime @default(now())
+}
