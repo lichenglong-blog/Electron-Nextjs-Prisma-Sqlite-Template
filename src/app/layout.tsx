@@ -1,12 +1,22 @@
-import { Html, Head, Main, NextScript } from 'next/document';
+import '@/styles/globals.css';
+import type { Metadata } from 'next';
 
-export default function Document() {
+export const metadata: Metadata = {
+  title: 'AI笔记应用',
+  description: 'AI驱动的笔记应用',
+};
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <Html lang="zh-CN">
-      <Head>
+    <html lang="zh-CN">
+      <head>
         <meta charSet="utf-8" />
-        <meta name="description" content="AI驱动的笔记应用" />
-      </Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
       <body>
         <script dangerouslySetInnerHTML={{
           __html: `
@@ -24,9 +34,8 @@ export default function Document() {
             }
           `
         }} />
-        <Main />
-        <NextScript />
+        {children}
       </body>
-    </Html>
+    </html>
   );
 } 
