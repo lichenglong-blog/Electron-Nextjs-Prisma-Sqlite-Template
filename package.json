@@ -1,9 +1,9 @@
 {
-    "name": "electron-nextjs-notes",
+    "name": "electron-nextjs-prisma-sqlite-template",
     "version": "1.1.1",
     "description": "桌面笔记应用",
     "main": "electron/main.js",
-    "author": "Your Name",
+    "author": "18110647040163.com",
     "license": "MIT",
     "private": true,
     "scripts": {

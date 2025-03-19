@@ -1,6 +1,6 @@
 # 桌面离线全栈应用模板 📝
 
-🚀🚀🚀贡献全网首个基于最新 Electron、Next.js、Prisma 和 SQLite 技术构建的桌面应用模板。🚀🚀🚀
+🚀🚀🚀贡献首个基于最新 Electron、Next.js、Prisma 和 SQLite 技术构建的桌面应用模板。🚀🚀🚀
 
 🚀🚀🚀体验Nextjs最畅快全栈开发，开发、生成环境都能直接运行。🚀🚀🚀
 
