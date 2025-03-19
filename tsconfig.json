@@ -34,7 +34,9 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "dist/renderer/types/**/*.ts"
+    "dist/renderer/types/**/*.ts",
+    ".next/types/**/*.ts",
+    "_next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules"

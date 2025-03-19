@@ -1,83 +1,98 @@
-const path = require('path');
-const isDev = process.env.NEXT_PUBLIC_DEV === 'true';
-const { BrowserWindow, app } = require('electron');
-const { waitForNextServer } = require('../utils/next');
-const { log } = require('../utils/log');
+const { app, BrowserWindow } = require("electron");
+const { startNextServer, cleanupNextServer, getCurrentPort } = require("../utils/server");
+const { log } = require("../utils/log");
+const { killPortSync } = require("../utils/port");
+const path = require("path");
+const isDev = process.env.NODE_ENV === "development";
 
+// 标记应用是否正在退出
+let isQuitting = false;
 
-// 从环境变量获取窗口配置
-const WINDOW_WIDTH = parseInt(process.env.NEXT_PUBLIC_WINDOW_WIDTH || '1200', 10);
-const WINDOW_HEIGHT = parseInt(process.env.NEXT_PUBLIC_WINDOW_HEIGHT || '800', 10);
-const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || '笔记应用';
-
-
-
-
-// 查找 HTML 文件
-function findHtmlFile() {
- 
-  return  path.join(app.getAppPath(), 'dist', 'renderer', 'index.html');
-}
-
-// 创建主窗口函数
-async function createMainWindow() {
-  // 在开发模式下等待 Next.js 服务器启动
-  if (isDev) {
+// 添加退出前的处理
+app.on('before-quit', (event) => {
+    // 如果已经处理过，跳过
+    if (isQuitting) return;
+    
+    log("应用退出前，清理端口 3000");
+    
+    // 阻止应用退出，等待端口清理完成
+    event.preventDefault();
+    isQuitting = true;
+    
     try {
-      await waitForNextServer();
+        // 使用同步方式确保端口完全释放
+        const result = killPortSync(3000);
+        log(`端口清理${result ? '成功' : '失败'}，继续退出`);
+    } catch (err) {
+        log(`端口清理失败: ${err.message}`);
+    }
+    
+    // 继续退出应用
+    app.quit();
+});
+
+
+// 创建主窗口
+async function createMainWindow() {
+    try {
+        // 确保Next.js服务已启动
+        if (isDev) {
+            await startNextServer();
+        }
+
+        // 创建浏览器窗口
+        const mainWindow = new BrowserWindow({
+            width: 1200,
+            height: 800,
+            webPreferences: {
+                nodeIntegration: true,
+                contextIsolation: false,
+                webSecurity: false,
+            },
+        });
+
+        // 加载页面
+        const startUrl = `http://localhost:${getCurrentPort()}`
+  
+        await mainWindow.loadURL(startUrl);
+
+        // 开发环境下打开开发者工具
+        if (isDev) {
+            mainWindow.webContents.openDevTools();
+        }
+
+        // 监听窗口关闭事件
+        mainWindow.on("closed", () => {
+            // 窗口关闭时终止Next.js服务
+            log("窗口关闭，清理服务器资源");
+            cleanupNextServer();
+            // 取消引用窗口对象
+        });
+
+        return mainWindow;
     } catch (error) {
-      console.error('等待 Next.js 服务器启动失败:', error);
-      return null;
+        log(`创建主窗口失败: ${error.message}`);
+        throw error;
     }
-  }
-
-  // 获取 preload 路径
-  const preloadPath = path.join(__dirname, '../preload.js');
-  log(`使用 preload 路径: ${preloadPath}`);
-
-  // 创建浏览器窗口
-  const mainWindow = new BrowserWindow({
-    width: WINDOW_WIDTH,
-    height: WINDOW_HEIGHT,
-    webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
-      sandbox: false,
-      preload: preloadPath
-    }
-  });
-
-  // 设置窗口标题
-  mainWindow.setTitle(APP_NAME);
-
-  // 根据环境确定要加载的 URL
-  let startUrl;
-  if (isDev) {
-    startUrl = 'http://localhost:3000';
-    log(`开发模式: 加载 ${startUrl}`);
-    mainWindow.loadURL(startUrl);
-  } else {
-    // 生产环境下使用文件协议加载 HTML 文件
-    const htmlPath = findHtmlFile();
-    startUrl = `file://${htmlPath}`;
-    log(`生产模式: 加载 ${startUrl}`);
-    mainWindow.loadURL(startUrl);
-  }
-
-  // 在开发模式下打开 DevTools
-  if (isDev) {
-    mainWindow.webContents.openDevTools();
-  }
-
-  // 监听窗口关闭事件
-  mainWindow.on('closed', () => {
-    // 取消引用窗口对象
-  });
-
-  return mainWindow;
 }
 
-// 导出函数
+// 监听所有窗口关闭事件
+app.on("window-all-closed", () => {
+    log("所有窗口关闭");
+    // 在 macOS 上，除非用户用 Cmd + Q 确定地退出，否则绝大部分应用及其菜单栏会保持激活
+    if (process.platform !== "darwin") {
+        app.quit();
+    }
+});
+
+// 监听应用激活事件
+app.on("activate", async () => {
+    // 在 macOS 上，当点击 dock 图标并且没有其他窗口打开时，绝大部分应用会重新创建一个窗口
+    if (BrowserWindow.getAllWindows().length === 0) {
+        await createMainWindow();
+    }
+});
+
 module.exports = {
-  createMainWindow
-}; 
+    createMainWindow,
+};

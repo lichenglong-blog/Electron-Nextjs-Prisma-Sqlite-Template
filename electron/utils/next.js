@@ -2,10 +2,10 @@ const http = require('http');
 const { log } = require('./log');
 
 // 等待 Next.js 服务器启动
-async function waitForNextServer() {
+async function waitForNextServer(port = 3000) {
   const maxAttempts = 30;
-  const interval = 1000; // 1秒
-  const url = 'http://localhost:3000';
+  const interval = 500; // 1秒
+  const url = `http://localhost:${port}`;
   
   log(`开始等待 Next.js 服务器启动，检查 URL: ${url}`);
 

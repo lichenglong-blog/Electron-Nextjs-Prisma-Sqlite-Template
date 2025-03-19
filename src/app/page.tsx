@@ -5,6 +5,8 @@ import { useSpring, animated } from '@react-spring/web';
 import NoteList from '@/components/NoteList';
 import NoteForm from '@/components/NoteForm';
 import { Note } from '@/types/note';
+import NoteService from '@/services/notes';
+import { message } from 'antd';
 
 export default function Home() {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -22,24 +24,13 @@ export default function Home() {
   const loadNotes = async () => {
     setLoading(true);
     try {
-      // 检查 electronAPI 是否可用（在 Electron 环境中才存在）
-      if (typeof window !== 'undefined' && window.electronAPI) {
-        const response = await window.electronAPI.getNotes();
-        if (response.success) {
-          setNotes(response.notes || []);
-        } else {
-          setError(response.error || '加载笔记失败');
-        }
+      const response = await NoteService.getNotes();
+      if (response.success) {
+        setNotes(response.data || []);
       } else {
-        // 在浏览器环境中（开发时可能直接使用 Next.js 服务器预览）
-        console.log('electronAPI 不可用，可能在纯浏览器环境中运行');
-        // 使用模拟数据用于开发
-        setNotes([
-          { id: 1, title: '示例笔记1', content: '这是一个示例内容', createdAt: new Date() },
-          { id: 2, title: '示例笔记2', content: '这是另一个示例内容', createdAt: new Date() }
-        ]);
+        setError(response.error || '加载笔记失败');
       }
-    } catch (err) {
+    } catch (err: any) {
       setError('加载笔记时出错');
       console.error(err);
     } finally {
@@ -50,26 +41,17 @@ export default function Home() {
   // 创建笔记
   const handleCreateNote = async (noteData: Omit<Note, 'id' | 'createdAt'>) => {
     try {
-      if (typeof window !== 'undefined' && window.electronAPI) {
-        const response = await window.electronAPI.createNote(noteData);
-        if (response.success) {
-          // 重新加载笔记列表
-          loadNotes();
-          return true;
-        } else {
-          setError(response.error || '创建笔记失败');
-          return false;
-        }
-      } else {
-        console.log('electronAPI 不可用，模拟创建笔记成功');
-        // 在开发环境中模拟成功
-        setNotes([
-          { id: Date.now(), title: noteData.title, content: noteData.content, createdAt: new Date() },
-          ...notes
-        ]);
+      const response = await NoteService.createNote(noteData);
+      if (response.success) {
+        message.success('笔记创建成功');
+        // 重新加载笔记列表
+        loadNotes();
         return true;
+      } else {
+        setError(response.error || '创建笔记失败');
+        return false;
       }
-    } catch (err) {
+    } catch (err: any) {
       setError('创建笔记时出错');
       console.error(err);
       return false;
@@ -79,23 +61,17 @@ export default function Home() {
   // 删除笔记
   const handleDeleteNote = async (id: number) => {
     try {
-      if (typeof window !== 'undefined' && window.electronAPI) {
-        const response = await window.electronAPI.deleteNote(id);
-        if (response.success) {
-          // 刷新笔记列表
-          loadNotes();
-          return true;
-        } else {
-          setError(response.error || '删除笔记失败');
-          return false;
-        }
-      } else {
-        console.log('electronAPI.deleteNote 不可用，模拟删除笔记');
-        // 在开发环境中模拟删除成功
-        setNotes(notes.filter(note => note.id !== id));
+      const response = await NoteService.deleteNote(id);
+      if (response.success) {
+        message.success('笔记删除成功');
+        // 刷新笔记列表
+        loadNotes();
         return true;
+      } else {
+        setError(response.error || '删除笔记失败');
+        return false;
       }
-    } catch (err) {
+    } catch (err: any) {
       setError('删除笔记时出错');
       console.error(err);
       return false;
