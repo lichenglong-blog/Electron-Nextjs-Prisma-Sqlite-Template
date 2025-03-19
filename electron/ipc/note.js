@@ -1,4 +1,4 @@
-const noteService = require('../services/prisma');
+const noteService = require('../services/note');
 
 // 设置 IPC 处理程序
 function setupIpcHandlers(ipcMain) {

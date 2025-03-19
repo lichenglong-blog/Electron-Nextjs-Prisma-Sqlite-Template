@@ -4,7 +4,8 @@ require('dotenv').config();
 const { app, ipcMain } = require('electron');
 const setupIpcHandlers = require('./ipc/note');
 const { createMainWindow } = require('./config/window');
-const noteService = require('./services/prisma');
+const noteService = require('./services/note');
+const prisma = require('./utils/prisma-client');
 const { log } = require('./utils/log');
 
 let mainWindow;
@@ -46,7 +47,7 @@ app.on('window-all-closed', () => {
 app.on('before-quit', async () => {
   log('应用程序准备退出，断开数据库连接');
   try {
-    await noteService.disconnect();
+    await prisma.disconnect();
   } catch (error) {
     log(`断开数据库连接时出错: ${error.message}`);
   }
