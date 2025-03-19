@@ -3,7 +3,7 @@ const isDev = process.env.NEXT_PUBLIC_DEV === 'true';
 const { BrowserWindow, app } = require('electron');
 const { waitForNextServer } = require('../utils/next');
 const { log } = require('../utils/log');
-const fs = require('fs');
+
 
 // 从环境变量获取窗口配置
 const WINDOW_WIDTH = parseInt(process.env.NEXT_PUBLIC_WINDOW_WIDTH || '1200', 10);
