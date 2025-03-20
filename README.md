@@ -13,7 +13,7 @@ v1.1.0
    - 解决Electron打包后的asar不能访问的Prisma二进制文件。
    - 确保Nextjs打包输出兼容electron访问。
    - 兼容preload脚本注入文件到渲染线程的加载，而不开放ipc。
-   - 目前支持webpack打包
+   - 目前支持webpack打包，1.1.o不支持nextjs服务端渲染，仅支持file://协议渲染页面
      
 v1.1.1
    - log日志3m递增新文件。
@@ -25,7 +25,7 @@ v1.2.0
      
 v1.3.0
    - preloadi api接口的方式和nextjs约定式路由开发api具有很多冲突，可切换到对应1.3.0分支选择拉取
-   - 支持electron本地ssr渲染,解决electron生产环境只能引入html。
+   - 支持electron本地nextjs ssr渲染,不再支持file渲染，让页面负载均衡渲染。
    - 支持v1.2.0
 
 
