@@ -45,6 +45,8 @@ v1.3.0
 - 表单验证
 - 数据持久化到 SQLite 数据库
 - 基于ipc通信和preload api注入，主线程和渲染线程隔离更安全。
+- nextjs ssr渲染、约定式api路由
+- log系统
 
 ## 开发 📝
 
