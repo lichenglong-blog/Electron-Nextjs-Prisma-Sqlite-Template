@@ -8,7 +8,7 @@
     "private": true,
     "scripts": {
         "dev": "cross-env NEXT_PUBLIC_DEV=true concurrently --kill-others --success first \"pnpm run dev:next\" \"pnpm run dev:electron\"",
-        "dev:next": "cross-env NEXT_PUBLIC_DEV=true next dev",
+        "dev:next": "cross-env NEXT_PUBLIC_DEV=true next dev --turbo",
         "dev:electron": "pnpm run build:main && cross-env NEXT_PUBLIC_DEV=true electron .",
         "build": "pnpm run build:next && pnpm run build:main && electron-builder",
         "build:next": "rimraf .next && rimraf dist && prisma generate && next build && pnpm run copy:static && pnpm run copy:dist",

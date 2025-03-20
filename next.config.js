@@ -15,7 +15,7 @@ const nextConfig = {
   output: 'standalone',
   // assetPrefix: isDev ? undefined : './',
   // 配置 webpack 以支持 Electron
-  webpack: (config, { isServer }) => {
+  webpack:isDev?undefined: (config, { isServer }) => {
     if (!isServer) {
       // 提供Node.js核心模块的浏览器polyfill
       config.resolve.fallback = {
@@ -43,7 +43,15 @@ const nextConfig = {
     }
     return config;
   },
-
+  
+  // 启用Turbopack
+  experimental: {
+    turbo:isDev? {
+      // Turbopack配置选项可以在这里添加
+      loaders: {},  // 如果需要可以配置自定义加载器
+      rules: {}     // 将数组改为对象
+    }:undefined
+  }
 }
 
 // 禁用遥测
