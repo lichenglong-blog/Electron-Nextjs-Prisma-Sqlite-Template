@@ -11,14 +11,20 @@ v1.1.0
    - 解决Electron打包后的asar不能访问的Prisma二进制文件。
    - 确保Nextjs打包输出兼容electron访问。
    - 兼容preload脚本注入文件到渲染线程的加载，而不开放ipc。
+   - 目前支持webpack打包
      
 v1.1.1
    - log日志3m递增新文件。
    - prisma文件拆分和单例prisam的优化。
      
+v1.2.0
+   - 支持开发环境turbopack极速打包，nextjs官方暂不支持生产环境打包编译。
+   - 支持v1.3.0
+     
 v1.3.0
    - preloadi api接口的方式和nextjs约定式路由开发api具有很多冲突，可切换到对应1.3.0分支选择拉取
    - 支持electron本地ssr渲染,解决electron生产环境只能引入html。
+   - 支持v1.2.0
 由于市面上没有找到合适的解决方案，因此决定自行开发。未来将支持 Next.js 约定式路由 API。
 
 ## 技术栈 📝
