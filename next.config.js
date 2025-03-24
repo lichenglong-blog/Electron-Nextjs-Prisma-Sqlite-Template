@@ -4,7 +4,7 @@ const path = require('path');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  reactStrictMode: false,
   // 修改输出目录配置
   // distDir: 'dist/renderer',
   // 在Electron环境中需要禁用图像优化

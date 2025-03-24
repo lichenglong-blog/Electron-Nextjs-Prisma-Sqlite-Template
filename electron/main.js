@@ -6,12 +6,13 @@ const { createMainWindow } = require("./config/window");
 const { log } = require("./utils/log");
 const { killPortSync } = require("./utils/port");
 let mainWindow;
-let isDev = false;
+let isDev = process.env.NODE_ENV === "true";
 // 应用初始化时清理端口
 try {
   log("应用启动，清理端口 3000");
-  killPortSync(3000);
   if (!isDev) {
+  killPortSync(3000);
+
     log("启动next server");
     startNextServer();
 }
@@ -23,7 +24,7 @@ try {
 app.whenReady().then(async () => {
     log(`应用启动 - 版本: ${process.env.NEXT_PUBLIC_APP_VERSION || "1.0.0"}`);
     log(`开发模式: ${process.env.NEXT_PUBLIC_DEV === "true" ? "是" : "否"}`);
-    isDev = process.env.NEXT_PUBLIC_DEV === "true";
+    
 
     try {
         // 创建主窗口
